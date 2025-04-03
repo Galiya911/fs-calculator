@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Калькулятор фриспинов с ручным вводом FS и вейджером</title>
+</head>
+<body>
+  <div style="max-width: 100%; padding: 20px; background: #f9f9f9; border-radius: 12px; font-family: 'Arial', sans-serif; border: 1px solid #ddd;">
+    <h3 style="margin-bottom: 15px;">🎰 Калькулятор фриспинов + Ручной ввод</h3>
+
+    <label style="display: block; margin-bottom: 5px;">💶 Депозит (€):</label>
+    <input type="number" id="deposit" value="5" step="0.01" style="width: 100%; padding: 10px; margin-bottom: 15px;" />
+
+    <label style="display: block; margin-bottom: 5px;">💸 Процент от депозита (%):</label>
+    <input type="number" id="percent" value="20" step="1" style="width: 100%; padding: 10px; margin-bottom: 15px;" />
+
+    <label style="display: block; margin-bottom: 5px;">🎯 Ставка за спин (€):</label>
+    <input type="number" id="stake" value="0.05" step="0.01" style="width: 100%; padding: 10px; margin-bottom: 15px;" />
+
+    <label style="display: block; margin-bottom: 5px;">🎰 Или введите количество фриспинов вручную:</label>
+    <input type="number" id="manualFS" placeholder="Оставьте пустым для автокалькуляции" style="width: 100%; padding: 10px; margin-bottom: 15px;" />
+
+    <label style="display: block; margin-bottom: 5px;">⚙️ Вейджер (опционально):</label>
+    <input type="number" id="manualWager" placeholder="Оставьте пустым для авто" style="width: 100%; padding: 10px; margin-bottom: 15px;" />
+
+    <button onclick="calculateFS()" style="width: 100%; padding: 12px; background: #ff6600; color: white; border: none; border-radius: 6px; font-weight: bold;">
+      Рассчитать
+    </button>
+
+    <div id="result" style="margin-top: 20px; font-size: 18px; font-weight: bold; color: #333;"></div>
+  </div>
+
+  <script>
+    function calculateFS() {
+      const deposit = parseFloat(document.getElementById('deposit').value);
+      const percent = parseFloat(document.getElementById('percent').value);
+      const stake = parseFloat(document.getElementById('stake').value);
+      const manualFSInput = document.getElementById('manualFS').value;
+      const manualWagerInput = document.getElementById('manualWager').value;
+
+      let fs = 0;
+
+      if (manualFSInput) {
+        fs = parseInt(manualFSInput);
+      } else {
+        fs = Math.floor((deposit * (percent / 100)) / stake);
+      }
+
+      let wager = 0;
+      if (manualWagerInput) {
+        wager = parseInt(manualWagerInput);
+      } else {
+        if (fs > 30 && fs <= 40) {
+          wager = 10;
+        } else if (fs > 40 && fs <= 50) {
+          wager = 20;
+        } else if (fs > 50) {
+          wager = 30;
+        }
+      }
+
+      if (fs > 0 && stake > 0) {
+        let resultText = `✅ Установлено <strong>${fs} фриспинов</strong>`;
+        if (wager > 0) {
+          resultText += `<br>⚠️ Применяется <strong>вейджер x${wager}</strong>`;
+        } else {
+          resultText += `<br>🟢 Вейджер не требуется`;
+        }
+        document.getElementById('result').innerHTML = resultText;
+      } else {
+        document.getElementById('result').innerHTML = "❗ Пожалуйста, введите корректные значения";
+      }
+    }
+  </script>
+</body>
+</html>
